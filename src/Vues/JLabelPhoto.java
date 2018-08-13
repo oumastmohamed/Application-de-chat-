@@ -1,0 +1,120 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Vues;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Ellipse2D;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+
+public class JLabelPhoto extends JLabel
+        implements ActionListener {
+
+    private int pos_x = 8;
+    private int pos_y = 8;
+    private final int RADIUS = 100;
+    private final int DELAY = 35;
+
+    private Timer timer;
+    private Image image;
+
+    private final double delta[] = { 3, 3 };
+
+    public JLabelPhoto() {
+        
+        loadImage();
+        determineAndSetImageSize();
+        //initTimer();
+    }
+    
+    private void loadImage() {
+        
+        image = new ImageIcon("C:\\Users\\Toshiba\\Desktop\\miniChatICONE\\yassine.jpg").getImage();
+    }
+    
+    private void determineAndSetImageSize() {
+        
+        
+            Image newimg = null;
+            newimg = image.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+            image = newimg;
+            
+        
+        
+        int h = image.getHeight(this);
+        int w = image.getWidth(this);
+        setPreferredSize(new Dimension(w, h));        
+    }    
+
+    private void initTimer() {   
+
+        timer = new Timer(DELAY, this);
+        timer.start();
+    }
+    
+    private void doDrawing(Graphics g) {
+        
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        g2d.clip(new Ellipse2D.Double(pos_x, pos_y, RADIUS, RADIUS));
+        g2d.drawImage(image, 8, 8, null); 
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+            g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.dispose();
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        
+        super.paintComponent(g);
+        doDrawing(g);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        //moveCircle();
+        //repaint();
+    }
+    
+    private void moveCircle() {
+
+        int w = getWidth();
+        int h = getHeight();
+
+        if (pos_x < 0) {
+            
+            delta[0] = Math.random() % 4 + 5;
+        } else if (pos_x > w - RADIUS) {
+            
+            delta[0] = -(Math.random() % 4 + 5);
+        }
+
+        if (pos_y < 0 ) {
+            
+            delta[1] = Math.random() % 4 + 5;
+        } else if (pos_y > h - RADIUS) {
+            
+            delta[1] = -(Math.random() % 4 + 5);
+        }
+
+        pos_x += delta[0];
+        pos_y += delta[1];
+    }       
+}
+
